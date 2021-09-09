@@ -29,4 +29,7 @@ cordova plugin add facebook-connect-plugin
 ```
 
 ## How to use it?
+See the [faceboock official
+documentation](https://github.com/Wizcorp/phonegap-facebook-plugin/) for
+more details.
 [TODO]
