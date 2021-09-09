@@ -19,11 +19,85 @@ val auth_response : login_response -> auth_response option
 
 val status : login_response -> string [@@js.get]
 
+[@@@js.stop]
+
 module Properties : sig
   type t
 
   val create : (string * string) list -> t
 end
+
+type html_elt = Js_of_ocaml.Dom_html.element Js_of_ocaml.Js.t
+
+val setAutoLogAppEventEnabled_available : unit -> bool
+
+[@@@js.start]
+
+[@@@js.implem
+module Properties = struct
+  type t = Ojs.t
+
+  let create ls =
+    Ojs.obj
+      (Array.of_list (List.map (fun (k, v) -> (k, Ojs.string_to_js v)) ls))
+
+  let t_to_js x = Ojs.t_to_js x
+end]
+
+[@@@js.implem type html_elt = Js_of_ocaml.Dom_html.element Js_of_ocaml.Js.t]
+
+[@@@js.implem let html_elt_to_js = Obj.magic]
+
+[@@@js.implem
+let setAutoLogAppEventEnabled_available () =
+  Js_of_ocaml.Js.Optdef.test
+    Js_of_ocaml.Js.Unsafe.global##.facebookConnectPlugin##.setAutoLogAppEventsEnabled]
+
+module AppEvents : sig
+  type t
+
+  val log_event :
+    t ->
+    eventName:string ->
+    ?valueToSum:float ->
+    ?param:Properties.t ->
+    unit ->
+    unit
+    [@@js.call "logEvent"]
+
+  val log_purchase :
+    t ->
+    purchaseAmount:float ->
+    currency:string ->
+    ?param:Properties.t ->
+    unit ->
+    unit
+    [@@js.call "logPurchase"]
+
+  val activate_app : t -> unit [@@js.call "activate_app"]
+
+  val log_page_view : t -> unit [@@js.call "logPageView"]
+
+  val set_user_id : t -> userID:string -> unit [@@js.call "setUserID"]
+
+  val get_user_id : t -> string [@@js.call "getUserID"]
+
+  val clear_user_id : t -> unit [@@js.call "clearUserID"]
+
+  val update_user_properties :
+    t -> params:string * string -> cb:(unit -> unit) -> unit
+    [@@js.call "updateUserProperties"]
+
+  val set_app_version : t -> string -> unit [@@js.call "setAppVersion"]
+
+  val get_app_version : t -> string [@@js.call "getAppVersion"]
+
+  val clear_app_version : t -> unit [@@js.call "clearAppVersion"]
+end
+
+type xfbml
+
+val parse : xfbml -> html_elt -> unit [@@js.call]
 
 module ConnectPlugin : sig
   type t
@@ -49,27 +123,27 @@ module ConnectPlugin : sig
     t -> successCB:(login_response -> unit) -> faillCB:(string -> unit) -> unit
     [@@js.call "getLoginStatus"]
 
-  (*TODO: complete the "option" type*)
-  type options
-
   type method_ =
     | Apprequests [@js "apprequests"]
     | Feed [@js "feed"]
     | Share [@js "share"]
   [@@js.enum]
 
-  val options :
+  (*TODO: complete the "opts" type*)
+  type opts
+
+  val opts :
     ?method_:method_ ->
     ?href:string ->
     ?link:string ->
     ?captation:string ->
     ?message:string ->
     unit ->
-    options
+    opts
     [@@js.builder] [@@js.verbatim_names]
 
   val show_dialog :
-    t -> options -> successCB:(unit -> unit) -> faillCB:(string -> unit) -> unit
+    t -> opts -> successCB:(unit -> unit) -> faillCB:(string -> unit) -> unit
     [@@js.call "showDialog"]
 
   (*TODO: find the first parameter type*)
