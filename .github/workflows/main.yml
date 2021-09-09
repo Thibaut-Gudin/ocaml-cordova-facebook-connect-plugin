@@ -44,9 +44,9 @@ jobs:
         with:
           ocaml-version: ${{ matrix.ocaml-version }}
 
-      - run: opam pin add cordova-facebook-connect-plugin.dev . --no-action
+      - run: opam pin add cordova-facebook-plugin.dev . --no-action
 
-      - run: opam depext cordova-facebook-connect-plugin --yes --with-doc --with-test
+      - run: opam depext cordova-facebook-plugin --yes --with-doc --with-test
 
       - run: opam install . --deps-only --with-doc --with-test
 

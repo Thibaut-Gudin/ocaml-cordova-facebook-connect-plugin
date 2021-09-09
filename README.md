@@ -1,11 +1,16 @@
-# ocaml-cordova-facebook-connect-plugin
-ocaml binding to the `facebookConnectPlugin` Javascript plugin using gen_js_api
+# ocaml-cordova-facebook-plugin
+ocaml binding to the Javascript plugins `facebookConnectPlugin` and `FB` using gen_js_api
 
 # What does ocaml-cordova-facebook-connect-plugin do ?
 
-This library allow you to use `facebookConnectPlugin` into your ocaml
-app. Like it's name suggest, this plugin allow you to connect into an
-app ussing a *Facebook* account.
+This library allow you to use sevral *Facebook* Java Script plugins
+into your ocaml app:
+
+The `FB` plugin, allow you to use sevral *Facebook* functionnalities
+into your app.
+
+The `facebookConnectPlugin` plugin, like it's name suggest,allow a user
+to connect to your app ussing a *Facebook* account.
 
 Binding to
 [facebbokConnectPlugin-angular](https://github.com/dunksmith/facebookConnectPlugin-angular)
@@ -29,6 +34,11 @@ cordova plugin add facebook-connect-plugin
 ```
 
 ## How to use it?
+
+### The `ConnectPlugin` module
+
+This module do the binding to the `facebookConnectPlugin` plugin.
+
 See the [faceboock official
 documentation](https://github.com/Wizcorp/phonegap-facebook-plugin/) for
 more details.

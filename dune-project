@@ -1,2 +1,2 @@
 (lang dune 2.8)
-(name cordova-facebook-connect-plugin)
+(name cordova-facebook-plugin)

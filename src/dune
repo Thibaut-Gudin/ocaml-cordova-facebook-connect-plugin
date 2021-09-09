@@ -1,11 +1,11 @@
 (rule
- (targets facebook_connect_plugin.ml)
- (deps facebook_connect_plugin.mli)
+ (targets fb.ml)
+ (deps fb.mli)
  (action (run %{bin:gen_js_api} %{deps})))
 
 (library
- (public_name cordova-facebook-connect-plugin)
- (name facebook_connect_plugin)
+ (public_name cordova-facebook-plugin)
+ (name fb)
  (modes byte)
  (libraries gen_js_api js_of_ocaml js_of_ocaml-ppx)
  (preprocess (pps js_of_ocaml-ppx))
