@@ -1,20 +1,22 @@
-type auth_response
+module AuthResponse : sig
+  type t
 
-val session_key : auth_response -> bool [@@js.get]
+  val session_key : t -> bool [@@js.get]
 
-val acess_token : auth_response -> string [@@js.get "acessToken"]
+  val acess_token : t -> string [@@js.get "acessToken"]
 
-val expires_in : auth_response -> int [@@js.get "expiresIn"]
+  val expires_in : t -> int [@@js.get "expiresIn"]
 
-val sig_ : auth_response -> string [@@js.get "signedRequest"]
+  val sig_ : t -> string [@@js.get "signedRequest"]
 
-val secret : auth_response -> string [@@js.get]
+  val secret : t -> string [@@js.get]
 
-val user_id : auth_response -> string [@@js.get "userID"]
+  val user_id : t -> string [@@js.get "userID"]
+end
 
 type login_response
 
-val auth_response : login_response -> auth_response option
+val auth_response : login_response -> AuthResponse.t option
   [@@js.get "authResponse"]
 
 val status : login_response -> string [@@js.get]
@@ -60,7 +62,7 @@ module AppEvents : sig
     t ->
     eventName:string ->
     ?valueToSum:float ->
-    ?param:Properties.t ->
+    ?params:Properties.t ->
     unit ->
     unit
     [@@js.call "logEvent"]
@@ -69,7 +71,7 @@ module AppEvents : sig
     t ->
     purchaseAmount:float ->
     currency:string ->
-    ?param:Properties.t ->
+    ?params:Properties.t ->
     unit ->
     unit
     [@@js.call "logPurchase"]
@@ -97,7 +99,66 @@ end
 
 type xfbml
 
-val parse : xfbml -> html_elt -> unit [@@js.call]
+val parse : xfbml -> ?dom:html_elt -> ?cb:(Ojs.t -> unit) -> unit -> unit
+  [@@js.call]
+
+type fb
+
+val get_instance : unit -> fb [@@js.get "._FB"]
+
+val get_instance_v2 : unit -> fb [@@js.get ".FB"]
+
+val get_instance_v3 : unit -> fb [@@js.get "window.FB"]
+
+type unity_editor_props
+
+val unity_editor_props :
+  ?appId:string ->
+  ?cookie:bool ->
+  ?logging:bool ->
+  ?status:bool ->
+  ?xfbml:bool ->
+  ?version:string ->
+  unit ->
+  unity_editor_props
+  [@@js.builder] [@@js.verbatim_names]
+
+val init : fb -> unity_editor_props -> unit [@@js.call]
+
+type login_opts
+
+val login_opts :
+  ?auth_type:string ->
+  ?scope:string ->
+  ?return_scopes:bool ->
+  ?enable_profile_selector:bool ->
+  ?profile_selector_ids:string ->
+  unit ->
+  login_opts
+  [@@js.builder] [@@js.verbatim_names]
+
+val login : fb -> ?cb:(login_response -> unit) -> login_opts -> unit [@@js.call]
+
+type api_opts
+
+(*TODO: find how the good type to bind the "method" parameter*)
+val api :
+  fb ->
+  path:string ->
+  method_:Ojs.t ->
+  ?params:Properties.t ->
+  (*See: https://developers.facebook.com/docs/graph-api/reference/ for available params values*)
+  callback:(Ojs.t -> unit) ->
+  unit
+  [@@js.call]
+
+val ui : fb -> params:Ojs.t -> (unit -> unit) -> unit [@@js.call]
+
+val get_login_status : fb -> cb:(login_response -> unit) -> unit [@@js.call]
+
+val get_app_events : fb -> AppEvents.t [@@js.get "_AppEvents"]
+
+val get_xfbml : fb -> xfbml [@@js.get "_XFBML"]
 
 module ConnectPlugin : sig
   type t
@@ -153,9 +214,9 @@ module ConnectPlugin : sig
 
   val log_event :
     t ->
-    string ->
-    ?parms:Properties.t ->
-    float ->
+    name:string ->
+    ?params:Properties.t ->
+    ?value:float ->
     successCB:(unit -> unit) ->
     faillCB:(string -> unit) ->
     unit

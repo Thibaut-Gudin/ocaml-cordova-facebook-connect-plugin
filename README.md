@@ -35,6 +35,9 @@ cordova plugin add facebook-connect-plugin
 
 ## How to use it?
 
+See the [facebook for developers official
+documentation](https://developers.facebook.com/?no_redirect=1) for more details.
+
 ### The `ConnectPlugin` module
 
 This module do the binding to the `facebookConnectPlugin` plugin.
