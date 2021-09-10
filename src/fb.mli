@@ -3,7 +3,7 @@ module AuthResponse : sig
 
   val session_key : t -> bool [@@js.get]
 
-  val acess_token : t -> string [@@js.get "acessToken"]
+  val access_token : t -> string [@@js.get "accessToken"]
 
   val expires_in : t -> int [@@js.get "expiresIn"]
 
