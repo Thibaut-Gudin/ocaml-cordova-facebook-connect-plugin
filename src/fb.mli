@@ -31,7 +31,7 @@ end
 
 type html_elt = Js_of_ocaml.Dom_html.element Js_of_ocaml.Js.t
 
-val setAutoLogAppEventEnabled_available : unit -> bool
+val setAutoLogAppEventsEnabled_available : unit -> bool
 
 [@@@js.start]
 
@@ -51,7 +51,7 @@ end]
 [@@@js.implem let html_elt_to_js = Obj.magic]
 
 [@@@js.implem
-let setAutoLogAppEventEnabled_available () =
+let setAutoLogAppEventsEnabled_available () =
   Js_of_ocaml.Js.Optdef.test
     Js_of_ocaml.Js.Unsafe.global##.facebookConnectPlugin##.setAutoLogAppEventsEnabled]
 
@@ -104,9 +104,9 @@ val parse : xfbml -> ?dom:html_elt -> ?cb:(Ojs.t -> unit) -> unit -> unit
 
 type fb
 
-val get_instance : unit -> fb [@@js.get "._FB"]
+val get_instance : unit -> fb [@@js.get "FB"]
 
-val get_instance_v2 : unit -> fb [@@js.get ".FB"]
+val get_instance_v2 : unit -> fb [@@js.global "FB"]
 
 val get_instance_v3 : unit -> fb [@@js.get "window.FB"]
 
