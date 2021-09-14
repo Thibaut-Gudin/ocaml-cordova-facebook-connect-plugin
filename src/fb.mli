@@ -106,10 +106,6 @@ type fb
 
 val get_instance : unit -> fb [@@js.get "FB"]
 
-val get_instance_v2 : unit -> fb [@@js.global "FB"]
-
-val get_instance_v3 : unit -> fb [@@js.get "window.FB"]
-
 type unity_editor_props
 
 val unity_editor_props :
@@ -123,7 +119,7 @@ val unity_editor_props :
   unity_editor_props
   [@@js.builder] [@@js.verbatim_names]
 
-val init : fb -> unity_editor_props -> unit [@@js.call]
+val init : unity_editor_props -> unit [@@js.global "FB.init"]
 
 type login_opts
 
@@ -137,10 +133,13 @@ val login_opts :
   login_opts
   [@@js.builder] [@@js.verbatim_names]
 
-val login : fb -> ?cb:(login_response -> unit) -> login_opts -> unit [@@js.call]
+val login : ?cb:(login_response -> unit) -> login_opts -> unit
+  [@@js.global "FB.login"]
 
 type api_opts
 
+(*TODO: no info found about a FB.api function...*)
+(*
 (*TODO: find how the good type to bind the "method" parameter*)
 val api :
   fb ->
@@ -151,38 +150,46 @@ val api :
   callback:(Ojs.t -> unit) ->
   unit
   [@@js.call]
+ *)
 
-val ui : fb -> params:Ojs.t -> (unit -> unit) -> unit [@@js.call]
+val ui : params:Ojs.t -> (unit -> unit) -> unit [@@js.global "FB.ui"]
 
-val get_login_status : fb -> cb:(login_response -> unit) -> unit [@@js.call]
+val get_login_status : cb:(login_response -> unit) -> unit
+  [@@js.global "FB.getLoginStatus"]
 
-val get_app_events : fb -> AppEvents.t [@@js.get "_AppEvents"]
+val get_app_events : fb -> AppEvents.t [@@js.get "AppEvents"]
 
-val get_xfbml : fb -> xfbml [@@js.get "_XFBML"]
+val get_app_events_v2 : unit -> AppEvents.t [@@js.get "FB.AppEvents"]
+
+val get_xfbml : fb -> xfbml [@@js.get "XFBML"]
+
+val get_xfbml_v2 : unit -> xfbml [@@js.get "FB.XFBML"]
 
 module ConnectPlugin : sig
+  (*
   type t
 
   val get_instance : unit -> t [@@js.get "facebookConnectPlugin"]
 
   val get_instance_v2 : unit -> t [@@js.get "window._facebookConnectPlugin"]
+   *)
 
-  val browser_init : t -> Ojs.t -> unit [@@js.call "BrowserInit"]
+  val browser_init : Ojs.t -> unit
+    [@@js.global "facebookConnectPlugin.BrowserInit"]
 
-  val logout : t -> successCB:(unit -> unit) -> faillCB:(string -> unit) -> unit
-    [@@js.call]
+  val logout : successCB:(unit -> unit) -> faillCB:(string -> unit) -> unit
+    [@@js.global "facebookConnectPlugin.logout"]
 
   val login :
-    t ->
     string array ->
     successCB:(login_response -> unit) ->
     faillCB:(string -> unit) ->
     unit
-    [@@js.call]
+    [@@js.global "facebookConnectPlugin.login"]
 
   val get_login_status :
-    t -> successCB:(login_response -> unit) -> faillCB:(string -> unit) -> unit
-    [@@js.call "getLoginStatus"]
+    successCB:(login_response -> unit) -> faillCB:(string -> unit) -> unit
+    [@@js.global "facebookConnectPlugin.getLoginStatus"]
 
   type method_ =
     | Apprequests [@js "apprequests"]
@@ -204,34 +211,35 @@ module ConnectPlugin : sig
     [@@js.builder] [@@js.verbatim_names]
 
   val show_dialog :
-    t -> opts -> successCB:(unit -> unit) -> faillCB:(string -> unit) -> unit
-    [@@js.call "showDialog"]
+    opts -> successCB:(unit -> unit) -> faillCB:(string -> unit) -> unit
+    [@@js.global "facebookConnectPlugin.showDialog"]
 
+  (*No info found*)
+  (*
   (*TODO: find the first parameter type*)
   val app_invite :
-    t -> Ojs.t -> successCB:(unit -> unit) -> failCB:(string -> unit) -> unit
-    [@@js.call]
+    Ojs.t -> successCB:(unit -> unit) -> failCB:(string -> unit) -> unit
+    [@@js.global "facebookConnectPlugin.AppInvite"]
+     *)
 
   val log_event :
-    t ->
     name:string ->
     ?params:Properties.t ->
     ?value:float ->
     successCB:(unit -> unit) ->
     faillCB:(string -> unit) ->
     unit
-    [@@js.call "logEvent"]
+    [@@js.global "facebookConnectPlugin.logEvent"]
 
   val log_purchase :
-    t ->
     float ->
     string ->
     successCB:(unit -> unit) ->
     faillCB:(string -> unit) ->
     unit
-    [@@js.call "logPurchase"]
+    [@@js.global "facebookConnectPlugin.logPurchase"]
 
   val set_auto_log_app_events_enabled :
-    t -> bool -> successCB:(unit -> unit) -> faillCB:(unit -> unit) -> unit
-    [@@js.call "setAutoLogAppEventsEnabled"]
+    bool -> successCB:(unit -> unit) -> faillCB:(unit -> unit) -> unit
+    [@@js.global "facebookConnectPlugin.setAutoLogAppEventsEnabled"]
 end
