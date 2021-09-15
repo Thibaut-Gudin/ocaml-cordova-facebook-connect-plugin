@@ -38,6 +38,20 @@ cordova plugin add facebook-connect-plugin
 See the [facebook for developers official
 documentation](https://developers.facebook.com/?no_redirect=1) for more details.
 
+### The `Fb.set_fb_async_init` function
+
+> The function assigned to window.fbAsyncInit is run as soon as the SDK
+  has completed loading. Any code that you want to run after the SDK is
+  loaded should be placed within this function and after the call to
+  FB.init. Any kind of JavaScript can be used here, but any SDK
+  functions must be called after FB.init.
+
+  Source : [facebook oficial
+  documentation](https://developers.facebook.com/docs/javascript/advanced-setup)
+
+This function allows you to set the value of the current `fbAsyncInit`
+function in you application.
+
 ### The `ConnectPlugin` module
 
 This module do the binding to the `facebookConnectPlugin` plugin.

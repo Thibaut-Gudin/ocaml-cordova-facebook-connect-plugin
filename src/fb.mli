@@ -243,3 +243,5 @@ module ConnectPlugin : sig
     bool -> successCB:(unit -> unit) -> faillCB:(unit -> unit) -> unit
     [@@js.global "facebookConnectPlugin.setAutoLogAppEventsEnabled"]
 end
+
+val set_fb_async_init : (unit -> unit) -> unit [@@js.set "window.fbAsyncInit"]
