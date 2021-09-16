@@ -33,6 +33,8 @@ type html_elt = Js_of_ocaml.Dom_html.element Js_of_ocaml.Js.t
 
 val setAutoLogAppEventsEnabled_available : unit -> bool
 
+val fbq_available : unit -> bool
+
 [@@@js.start]
 
 [@@@js.implem
@@ -54,6 +56,10 @@ end]
 let setAutoLogAppEventsEnabled_available () =
   Js_of_ocaml.Js.Optdef.test
     Js_of_ocaml.Js.Unsafe.global##.facebookConnectPlugin##.setAutoLogAppEventsEnabled]
+
+[@@@js.implem
+let fbq_available () =
+  Js_of_ocaml.Js.Optdef.test Js_of_ocaml.Js.Unsafe.global##.fbq]
 
 module AppEvents : sig
   type t
@@ -245,3 +251,12 @@ module ConnectPlugin : sig
 end
 
 val set_fb_async_init : (unit -> unit) -> unit [@@js.set "window.fbAsyncInit"]
+
+type fbq_f = Track [@js "track"] | Track_custom [@js "trackCustom"]
+[@@js.enum]
+
+val fbq : fbq_f -> ?name:string -> ?prop:Properties.t -> unit -> unit
+  [@@js.global "fbq"]
+
+val fbq_v2 : fbq_f -> ?name:string -> ?prop:Properties.t -> unit -> unit
+  [@@js.global "window.fbq"]
